@@ -1,4 +1,4 @@
-from IPython.parallel import Client
+from ipyparallel import Client
 c = Client()
 c.ids
 

@@ -9,7 +9,7 @@ We'll do this mostly as a demonstration. We encourage you to login to your accou
 
 Much of this material is based on the extensive Savio documention we have prepared and continue to prepare, available at [http://research-it.berkeley.edu/services/high-performance-computing](http://research-it.berkeley.edu/services/high-performance-computing).
 
-The materials for this tutorial are available using git at [https://github.com/ucberkeley/savio-training-intro-2017](https://github.com/ucberkeley/savio-training-intro-2017) or simply as a [zip file](https://github.com/ucberkeley/savio-training-intro-2017/archive/master.zip).
+The materials for this tutorial are available using git at [https://github.com/ucberkeley/savio-training-intro-2018](https://github.com/ucberkeley/savio-training-intro-2018) or simply as a [zip file](https://github.com/ucberkeley/savio-training-intro-2018/archive/master.zip).
 
 # Outline
 
@@ -121,7 +121,7 @@ You need to use the Savio data transfer node, `dtn.brc.berkeley.edu`. The file `
 
 Linux/Mac:
 
-```
+```bash
 # to Savio, while on your local machine
 scp bayArea.csv paciorek@dtn.brc.berkeley.edu:~/.
 scp bayArea.csv paciorek@dtn.brc.berkeley.edu:~/data/newName.csv
@@ -199,7 +199,7 @@ get zotero.sqlite
 
 One additional command that can be quite useful is *mirror*, which lets you copy an entire directory to/from Box.
 
-```
+```bash
 # to upload a directory from Savio to Box 
 mirror -R mydir
 # to download a directory from Box to Savio
@@ -242,7 +242,6 @@ module load openmpi
 
 Note that a variety of Python packages are directly simply by loading the python module. For R this is not the case, but you can load the *r-packages* module.
 
-
 # Submitting jobs: accounts and partitions
 
 All computations are done by submitting jobs to the scheduling software that manages jobs on the cluster, called SLURM.
@@ -273,7 +272,7 @@ brc|ac_scsguest|paciorek|savio_bigmem|1||||||||||||savio_debug,savio_normal|savi
 brc|ac_scsguest|paciorek|savio|1||||||||||||savio_debug,savio_normal|savio_normal||
 ```
 
-If you are part of a condo, you'll notice that you have *low-priority* access to certain partitions. For example I am part of the statistics condo *co_stat*, which owns some Savio2 nodes and therefore I have normal access to those, but I can also burst beyond the condo and use other partitions at low-priority (see below).
+If you are part of a condo, you'll notice that you have *low-priority* access to certain partitions. For example I am part of the statistics condo *co_stat*, which owns some Savio2 nodes and Savio2_gpu and therefore I have normal access to those, but I can also burst beyond the condo and use other partitions at low-priority (see below).
 
 In contrast, through my FCA, I have access to the savio, savio2, and big memory partitions.
 
@@ -284,24 +283,24 @@ Let's see how to submit a simple job. If your job will only use the resources on
 
 Here's an example job script that I'll run. You'll need to modify the --account value and possibly the --partition value.
 
-
-        #!/bin/bash
-        # Job name:
-        #SBATCH --job-name=test
-        #
-        # Account:
-        #SBATCH --account=co_stat
-        #
-        # Partition:
-        #SBATCH --partition=savio2
-        #
-        # Wall clock limit (30 seconds here):
-        #SBATCH --time=00:00:30
-        #
-        ## Command(s) to run:
-        module load python/3.2.3 numpy
-        python3 calc.py >& calc.out
-
+```bash
+#!/bin/bash
+# Job name:
+#SBATCH --job-name=test
+#
+# Account:
+#SBATCH --account=co_stat
+#
+# Partition:
+#SBATCH --partition=savio2
+#
+# Wall clock limit (30 seconds here):
+#SBATCH --time=00:00:30
+#
+## Command(s) to run:
+module load python/3.6
+python calc.py >& calc.out
+```
 
 Now let's submit and monitor the job:
 
@@ -315,12 +314,16 @@ wwall -j <JOB_ID>
 
 After a job has completed (or been terminated/cancelled), you can review the maximum memory used via the sacct command.
 
-```bash
-sacct -j <JOBID> --format=JobID,JobName,MaxRSS,Elapsed
+```
+sacct -j <JOB_ID> --format=JobID,JobName,MaxRSS,Elapsed
 ```
 
 MaxRSS will show the maximum amount of memory that the job used in kilobytes.
 
+You can also login to the node where you are running and use commands like *top* and *ps*:
+
+```
+srun --jobid=<JOB_ID> --pty /bin/bash
 
 Note that except for the *savio2_htc*  and *savio2_gpu* partitions, all jobs are given exclusive access to the entire node or nodes assigned to the job (and your account is charged for all of the cores on the node(s). 
 
@@ -336,29 +339,30 @@ In addition, in some cases it can make sense to use the `--ntasks` (or `-n`) opt
 
 Here's an example job script for a job that uses MPI for parallelizing over multiple nodes:
 
-       #!/bin/bash
-       # Job name:
-       #SBATCH --job-name=test
-       #
-       # Account:
-       #SBATCH --account=account_name
-       #
-       # Partition:
-       #SBATCH --partition=partition_name
-       #
-       # Number of MPI tasks needed for use case (example):
-       #SBATCH --ntasks=40
-       #
-       # Processors per task:
-       #SBATCH --cpus-per-task=1
-       #
-       # Wall clock limit:
-       #SBATCH --time=00:00:30
-       #
-       ## Command(s) to run (example):
-       module load intel openmpi
-       mpirun ./a.out
-
+```bash
+#!/bin/bash
+# Job name:
+#SBATCH --job-name=test
+#
+# Account:
+#SBATCH --account=account_name
+#
+# Partition:
+#SBATCH --partition=partition_name
+#
+# Number of MPI tasks needed for use case (example):
+#SBATCH --ntasks=40
+#
+# Processors per task:
+#SBATCH --cpus-per-task=1
+#
+# Wall clock limit:
+#SBATCH --time=00:00:30
+#
+## Command(s) to run (example):
+module load intel openmpi
+mpirun ./a.out
+```
 
 When you write your code, you may need to specify information about the number of cores to use. SLURM will provide a variety of variables that you can use in your code so that it adapts to the resources you have requested rather than being hard-coded. 
 
@@ -375,16 +379,13 @@ There are lots more examples of job submission scripts for different kinds of pa
 
 # Interactive jobs
 
-You can also do work interactively.
-
-For this, you may want to have used the -Y flag to ssh if you are running software with a GUI such as MATLAB. 
+You can also do work interactively. 
 
 ```
-# ssh -Y SAVIO_USERNAME@hpc.brc.berkeley.edu
 srun -A co_stat -p savio2  --nodes=1 -t 10:0 --pty bash
 # now execute on the compute node:
 module load matlab
-matlab
+matlab -nodesktop -nodisplay
 ```
 
 To end your interactive session (and prevent accrual of additional charges to your FCA), simply enter `exit` in the terminal session.
@@ -393,7 +394,7 @@ NOTE: you are charged for the entire node when running interactive jobs (as with
 
 # Running graphical interfaces interactively on the visualization node
 
-TODO: more details
+If you are running a graphical interface, we recommend you use Savio's remote desktop service on our visualization node, as described [here](http://research-it.berkeley.edu/services/high-performance-computing/using-brc-visualization-node-realvnc).
 
 # Low-priority queue
 
@@ -417,8 +418,8 @@ There is a partition called the HTC partition that allows you to request cores i
 srun -A co_stat -p savio2_htc --cpus-per-task=2 -t 10:0 --pty bash
 ## we can look at environment variables to verify our two cores
 env | grep SLURM
-module load python/3.2.3 numpy
-python3 calc.py >& calc.out &
+module load python
+python calc.py >& calc.out &
 top
 ```
 
@@ -431,7 +432,7 @@ Here are some options:
   - using [Savio's HT Helper tool](http://research-it.berkeley.edu/services/high-performance-computing/user-guide/hthelper-script) to run many computational tasks (e.g., thousands of simulations, scanning tens of thousands of parameter values, etc.) as part of single Savio job submission
   - using [single-node parallelism](https://github.com/berkeley-scf/tutorial-parallel-basics) and [multiple-node parallelism](https://github.com/berkeley-scf/tutorial-parallel-distributed) in Python, R, and MATLAB
     - parallel R tools such as *foreach*, *parLapply*, and *mclapply*
-    - parallel Python tools such as  *IPython parallel*, *pp*, and *multiprocessing*
+    - parallel Python tools such as  *IPython parallel*, and *Dask*
     - parallel functionality in MATLAB through *parfor*
 
 # Monitoring jobs and the job queue
@@ -483,14 +484,10 @@ Here we'll use *IPython* for parallel computing. The example is a bit contrived 
 First we'll install a Python package not already available as a module.
 
 ```
-# remember to do I/O off scratch
-cp bayArea.csv /global/scratch/paciorek/.
+cp bayArea.csv /global/scratch/paciorek/.  # remember to do I/O off scratch
 # install Python package
 module unload python
-module load python/2.7.8
-module load pip
-# trial and error to realize which package dependencies available in modules...
-module load numpy scipy six pandas pytz
+module load python/3.6
 pip install --user statsmodels
 ```
 
@@ -503,7 +500,7 @@ srun -A co_stat -p savio2 --nodes=2 --ntasks-per-node=24 -t 30:0 --pty bash
 Now we'll start up a cluster using IPython's parallel tools. To do this across multiple nodes within a SLURM job, it goes like this:
  
 ```
-module load python/2.7.8 ipython gcc openmpi
+module load python/3.6 gcc openmpi
 ipcontroller --ip='*' &
 sleep 10
 srun ipengine &
@@ -514,7 +511,7 @@ ipython
 If we were doing this on a single node, we could start everything up in a single call to *ipcluster*:
 
 ```
-module load python/2.7.8 ipython
+module load python/3.6
 ipcluster start -n $SLURM_CPUS_ON_NODE &
 ipython
 ```
@@ -522,7 +519,7 @@ ipython
 Here's our Python code (also found in *parallel.py*) for doing an analysis across multiple strata/subsets of the dataset in parallel. Note that the 'load_balanced_view' business is so that the computations are done in a load-balanced fashion, which is important for tasks that take different amounts of time to complete.
 
 ```
-from IPython.parallel import Client
+from ipyparallel import Client
 c = Client()
 c.ids
 
@@ -580,19 +577,17 @@ Let's see a basic example of doing an analysis in R across multiple cores on mul
 
 We'll do this interactively though often this sort of thing would be done via a batch job.
 
-```
+```bash
 # remember to do I/O off scratch
 cp bayArea.csv /global/scratch/paciorek/.
-module load r Rmpi
-Rscript -e "install.packages('doMPI', repos = 'http://cran.cnr.berkeley.edu',
-  lib = '/global/home/users/paciorek/R/x86_64-pc-linux-gnu-library/3.2')"
 
 srun -A co_stat -p savio2  --nodes=3 --ntasks-per-node=24 -t 30:0 --pty bash
-module load gcc openmpi r Rmpi
+module load gcc openmpi r/3.4.2 r-packages 
 mpirun R CMD BATCH --no-save parallel-multi.R parallel-multi.Rout &
 ```
 
 Now here's the R code (see *parallel-multi.R*) we're running:
+
 ```
 library(doMPI)
 
@@ -661,12 +656,12 @@ results
     - brc-hpc-help@berkeley.edu
  - For questions about computing resources in general, including cloud computing: 
     - brc@berkeley.edu
-    - office hours: Wed. 1:30-3:30, Thur. 9:30-11:30 here in AIS
+    - office hours: Tues. 10:00 - 12:00, Wed. 1:30-3:30, Thur. 9:30-11:30 here in AIS
  - For questions about data management (including HIPAA-protected data): 
     - researchdata@berkeley.edu
+    - office hours: Tues. 10:00 - 12:00, Wed. 1:30-3:30, Thur. 9:30-11:30 here in AIS
 
 
 # Upcoming events
 
- - [Cloud Working Group](http://research-it.berkeley.edu/services/cloud-computing-support/cloud-working-group), every other Thursday (including Sep. 28), 4-5 in D-Lab
- - [Machine Learning Working Group](http://dlab.berkeley.edu/working-groups/machine-learning-working-group-0), every other Friday (including Sep. 22), 12:30-2 in D-Lab
+ - [Savio installation workshop](http://research-it.berkeley.edu/services/cloud-computing-support/cloud-working-group), October XX.
