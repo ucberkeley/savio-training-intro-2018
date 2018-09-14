@@ -1,0 +1,534 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="September 19, 2017" />
+  <title>Savio introductory training: Basic usage of the Berkeley Savio high-performance computing cluster</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">Savio introductory training: Basic usage of the Berkeley Savio high-performance computing cluster</h1>
+<h2 class="author">September 19, 2017</h2>
+<h3 class="date">Chris Paciorek and Deb McCaffrey</h3>
+</div>
+<h1 id="introduction">Introduction</h1>
+<p>We'll do this mostly as a demonstration. We encourage you to login to your account and try out the various examples yourself as we go through them.</p>
+<p>Much of this material is based on the extensive Savio documention we have prepared and continue to prepare, available at <a href="http://research-it.berkeley.edu/services/high-performance-computing" class="uri">http://research-it.berkeley.edu/services/high-performance-computing</a>.</p>
+<p>The materials for this tutorial are available using git at <a href="https://github.com/ucberkeley/savio-training-intro-2017" class="uri">https://github.com/ucberkeley/savio-training-intro-2017</a> or simply as a <a href="https://github.com/ucberkeley/savio-training-intro-2017/archive/master.zip">zip file</a>.</p>
+<h1 id="outline">Outline</h1>
+<p>This training session will cover the following topics:</p>
+<ul>
+<li>System capabilities and hardware
+<ul>
+<li>Getting access to the system - FCA, condo, ICA</li>
+<li>Savio computing nodes</li>
+<li>Disk space options (home, scratch, condo storage)</li>
+</ul></li>
+<li>Logging in, data transfer, and software
+<ul>
+<li>Login nodes, compute nodes, and DTN nodes</li>
+<li>Logging in</li>
+<li>Data transfer
+<ul>
+<li>SCP/SFTP</li>
+<li>Globus</li>
+<li>Box</li>
+<li>bDrive (Google drive)</li>
+</ul></li>
+<li>Software modules</li>
+</ul></li>
+<li>Submitting and monitoring jobs
+<ul>
+<li>Acounts and partitions</li>
+<li>Basic job submission</li>
+<li>Parallel jobs</li>
+<li>Interactive jobs</li>
+<li>Low-priority queue</li>
+<li>HTC jobs</li>
+<li>Monitoring jobs and cluster status</li>
+</ul></li>
+<li>Basic use of standard software: Python and R
+<ul>
+<li>Jupyter notebooks</li>
+</ul></li>
+<li>More information
+<ul>
+<li>How to get additional help</li>
+<li>Upcoming events</li>
+</ul></li>
+</ul>
+<h1 id="system-capabilities-and-hardware">System capabilities and hardware</h1>
+<ul>
+<li>Savio is a &gt;380-node, &gt;8000-core Linux cluster rated at &gt;300 peak teraFLOPS.</li>
+<li>about 174 compute nodes provided by the institution for general access</li>
+<li>about 211 compute nodes contributed by researchers in the Condo program</li>
+</ul>
+<h1 id="getting-access-to-the-system---fca-and-condo">Getting access to the system - FCA and condo</h1>
+<ul>
+<li>All regular Berkeley faculty can request 300,000 service units (roughly core-hours) per year through the <a href="http://research-it.berkeley.edu/services/high-performance-computing/faculty-computing-allowance">Faculty Computing Allowance (FCA)</a></li>
+<li>Researchers can also purchase nodes for their own priority access and gain access to the shared Savio infrastructure and to the ability to <em>burst</em> to additional nodes through the <a href="http://research-it.berkeley.edu/services/high-performance-computing/condo-cluster-program">condo cluster program</a></li>
+<li>Instructors can request an <a href="http://research-it.berkeley.edu/programs/berkeley-research-computing/instructional-computing-allowance">Instructional Computing Allowance (ICA)</a>.</li>
+</ul>
+<p>Faculty/principal investigators can allow researchers working with them to get user accounts with access to the FCA or condo resources available to the faculty member.</p>
+<h1 id="savio-computing-nodes">Savio computing nodes</h1>
+<p>Let's take a look at the hardware specifications of the computing nodes on the cluster <a href="http://research-it.berkeley.edu/services/high-performance-computing/user-guide/savio-user-guide">(see the <em>Hardware Configuration</em> section of this document)</a>.</p>
+<p>The nodes are divided into several pools, called partitions. These partitions have different restrictions and costs associated with them <a href="http://research-it.berkeley.edu/services/high-performance-computing/user-guide/savio-user-guide">(see the <em>Scheduler Configuration</em> section of this document)</a>. Any job you submit must be submitted to a partition to which you have access.</p>
+<h1 id="disk-space-options-home-scratch-project-condo-storage">Disk space options (home, scratch, project, condo storage)</h1>
+<p>You have access to the following disk space, described <a href="http://research-it.berkeley.edu/services/high-performance-computing/user-guide/savio-user-guide">here in the <em>Storage and Backup</em> section</a>.</p>
+<p>When reading/writing data to/from disk, unless the amount of data is small, please put the data in your scratch space at <code>/global/scratch/SAVIO_USERNAME</code>. The system is set up so that disk access for all users is optimized when users are doing input/output (I/O) off of scratch rather than off of their home directories. Doing I/O with files on your home directory can impact the ability of others to access their files on the filesystem.</p>
+<p>Large amounts of disk space is available for purchase from the <a href="http://research-it.berkeley.edu/services/high-performance-computing/brc-condo-storage-service-savio"><em>condo storage</em> offering</a>. The minimum purchase is about $7,000, which provides roughly 25 TB for five years.</p>
+<h1 id="login-nodes-compute-nodes-and-dtn-nodes">Login nodes, compute nodes, and DTN nodes</h1>
+<p>Savio has a few different kinds of nodes:</p>
+<ul>
+<li>login nodes: for login and non-intensive interactive work such as job submission and monitoring, basic compilation, managing your disk space</li>
+<li>data transfer nodes: for transferring data to/from Savio</li>
+<li>compute nodes: for computational tasks</li>
+</ul>
+<center>
+<img src="savioOverview.jpeg">
+</center>
+<h1 id="logging-in">Logging in</h1>
+<p>To login, you need to have software on your own machine that gives you access to a UNIX terminal (command-line) session. These come built-in with Mac (see <code>Applications -&gt; Utilities -&gt; Terminal</code>). For Windows, some options include <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html">PuTTY</a>.</p>
+<p>You also need to set up your smartphone or tablet with <em>Google Authenticator</em> to generate one-time passwords for you.</p>
+<p>Here are instructions for <a href="http://research-it.berkeley.edu/services/high-performance-computing/logging-savio">doing this setup, and for logging in</a>.</p>
+<p>Then to login:</p>
+<pre><code>ssh SAVIO_USERNAME@hpc.brc.berkeley.edu</code></pre>
+<p>Then enter XXXXXYYYYYY where XXXXXX is your PIN and YYYYYY is the one-time password. YYYYYY will be shown when you open your <em>Google authenticator</em> app on your phone/tablet.</p>
+<p>One can then navigate around and get information using standard UNIX commands such as <code>ls</code>, <code>cd</code>, <code>du</code>, <code>df</code>, etc.</p>
+<p>If you want to be able to open programs with graphical user interfaces:</p>
+<pre><code>ssh -Y SAVIO_USERNAME@hpc.brc.berkeley.edu</code></pre>
+<p>To display the graphical windows on your local machine, you'll need X server software on your own machine to manage the graphical windows. For Windows, your options include <em>eXceed</em> or <em>Xming</em> and for Mac, there is <em>XQuartz</em>.</p>
+<h1 id="data-transfer-with-examples-tofrom-laptop-box-google-drive-aws">Data transfer with examples to/from laptop, Box, Google Drive, AWS</h1>
+<p>Let's see how we would transfer files/data to/from Savio using a few different approaches.</p>
+<h1 id="data-transfer-scpsftp">Data transfer: SCP/SFTP</h1>
+<p>We can use the <em>scp</em> and <em>sftp</em> protocols to transfer files.</p>
+<p>You need to use the Savio data transfer node, <code>dtn.brc.berkeley.edu</code>. The file <code>bayArea.csv</code> is too large to store on Github; you can obtain it <a href="https://www.stat.berkeley.edu/share/paciorek/bayArea.csv">here</a>.</p>
+<p>Linux/Mac:</p>
+<pre><code># to Savio, while on your local machine
+scp bayArea.csv paciorek@dtn.brc.berkeley.edu:~/.
+scp bayArea.csv paciorek@dtn.brc.berkeley.edu:~/data/newName.csv
+scp bayArea.csv paciorek@dtn.brc.berkeley.edu:/global/scratch/paciorek/.
+
+# from Savio, while on your local machine
+scp paciorek@dtn.brc.berkeley.edu:~/data/newName.csv ~/Desktop/.</code></pre>
+<p>If you can ssh to your local machine or want to transfer files to other systems on to which you can ssh, you can login to the dtn node to execute the scp commands:</p>
+<pre><code>ssh SAVIO_USERNAME@dtn.brc.berkeley.edu
+[SAVIO_USERNAME@dtn ~]$ scp ~/file.csv OTHER_USERNAME@other.domain.edu:~/data/.</code></pre>
+<p>If you're already connected to a Savio login node, you can use <code>ssh dtn</code> to login to the dtn.</p>
+<p>One program you can use with Windows is <em>WinSCP</em>, and a multi-platform program for doing transfers via SFTP is <em>FileZilla</em>. After logging in, you'll see windows for the Savio filesystem and your local filesystem on your machine. You can drag files back and forth.</p>
+<p>You can package multiple files (including directory structure) together using tar:</p>
+<pre><code>tar -cvzf files.tgz dir_to_zip 
+# to untar later:
+tar -xvzf files.tgz</code></pre>
+<h1 id="data-transfer-globus">Data transfer: Globus</h1>
+<p>You can use Globus Connect to transfer data data to/from Savio (and between other resources) quickly and unattended. This is a better choice for large transfers. Here are some <a href="http://research-it.berkeley.edu/services/high-performance-computing/using-globus-connect-savio">instructions</a>.</p>
+<p>Globus transfers data between <em>endpoints</em>. Possible endpoints include: Savio, your laptop or desktop, NERSC, and XSEDE, among others.</p>
+<p>Savio's endpoint is named <code>ucb#brc</code>.</p>
+<p>If you are transferring to/from your laptop, you'll need</p>
+<ol style="list-style-type: decimal">
+<li>Globus Connect Personal set up,</li>
+<li>your machine established as an endpoint, and</li>
+<li>Globus Connect Pesonal actively running on your machine. At that point you can proceed as below.</li>
+</ol>
+<p>To transfer files, you open Globus at <a href="https://globus.org">globus.org</a> and authenticate to the endpoints you want to transfer between. This means that you only need to authenticate once, whereas you might need to authenticate multiple times with scp and sftp. You can then start a transfer and it will proceed in the background, including restarting if interrupted.</p>
+<p>Globus also provides a <a href="https://docs.globus.org/cli/using-the-cli">command line interface</a> that will allow you to do transfers programmatically, such that a transfer could be embedded in a workflow script.</p>
+<h1 id="data-transfer-box">Data transfer: Box</h1>
+<p>Box provides <strong>unlimited</strong>, free, secured, and encrypted content storage of files with a maximum file size of 15 Gb to Berkeley affiliates. So it's a good option for backup and long-term storage.</p>
+<p>You can move files between Box and your laptop using the Box Sync app. And you can interact with Box via a web browser at <a href="http://box.berkeley.edu" class="uri">http://box.berkeley.edu</a>.</p>
+<p>The best way to move files between Box and Savio is <a href="http://research-it.berkeley.edu/services/high-performance-computing/transferring-data-between-savio-and-your-uc-berkeley-box-account">via lftp as discussed here</a>.</p>
+<p>Here's how you logon to box via <em>lftp</em> on Savio (assuming you've set up an external password already as described in the link above):</p>
+<pre><code>ssh SAVIO_USERNAME@dtn.brc.berkeley.edu
+module load lftp
+lftp ftp.box.com
+set ssl-allow true
+user CAMPUS_USERNAME@berkeley.edu</code></pre>
+<pre><code>lpwd # on Savio
+ls # on box
+!ls # on Savio
+mkdir workshops
+cd workshops # on box
+lcd savio-training-intro-2017 # on savio
+put parallel-multi.R # savio to box
+get zotero.sqlite</code></pre>
+<p>One additional command that can be quite useful is <em>mirror</em>, which lets you copy an entire directory to/from Box.</p>
+<pre><code># to upload a directory from Savio to Box 
+mirror -R mydir
+# to download a directory from Box to Savio
+mirror mydir .</code></pre>
+<p>Be careful, because it's fairly easy to wipe out files or directories on Box.</p>
+<p>Finally you can set up <em>special purpose accounts</em> (Berkeley SPA) so files are owned at a project level rather than by individuals.</p>
+<p>For more ambitious users, Box has a Python-based SDK that can be used to write scripts for file transfers. For more information on how to do this, check out the <code>BoxAuthenticationBootstrap.ipynb</code> and <code>TransferFilesFromBoxToSavioScratch.ipynb</code> from BRC's cyberinfrastructure engineer on <a href="https://github.com/ucberkeley/brc-cyberinfrastructure/tree/dev/analysis-workflows/notebooks">GitHub</a></p>
+<p>BRC is working (long-term) on making Globus available for transfer to/from Box, but it's not available yet.</p>
+<h1 id="data-transfer-bdrive-google-drive">Data transfer: bDrive (Google Drive)</h1>
+<p>bDrive provides <strong>unlimited</strong>, free, secured, and encrypted content storage of files with a maximum file size of 5 Tb to Berkeley affiliates.</p>
+<p>You can move files to and from your laptop using the Google Drive app.</p>
+<p>There are also some third-party tools for copying files to/from Google Drive, though I've found them to be a bit klunky. This is why we recommend using Box for workflows at this point. However, BRC is also working on making Globus available for transfer to/from bDrive, though it's not available yet.</p>
+<h1 id="software-modules">Software modules</h1>
+<p>A lot of software is available on Savio but needs to be loaded from the relevant software module before you can use it.</p>
+<pre><code>module list  # what&#39;s loaded?
+module avail  # what&#39;s available</code></pre>
+<p>One thing that tricks people is that the modules are arranged in a hierarchical (nested) fashion, so you only see some of the modules as being available <em>after</em> you load the parent module. Here's how we see the Python packages that are available.</p>
+<pre><code>which python
+python
+
+module avail
+module load python/3.2.3
+which python
+module avail
+module load numpy
+python 
+# import numpy as np</code></pre>
+<p>Note that once Savio switches to the SL7 operating system circa December, all Python and R packages will be directly available as soon as either the Python or R module is loaded.</p>
+<p>Similarly, we can see that linear algebra, FFT, and HDF5/NetCDF software is available only after loading either the intel or gcc modules.</p>
+<pre><code>module load intel
+module avail
+module swap intel gcc
+module avail</code></pre>
+<h1 id="submitting-jobs-accounts-and-partitions">Submitting jobs: accounts and partitions</h1>
+<p>All computations are done by submitting jobs to the scheduling software that manages jobs on the cluster, called SLURM.</p>
+<p>When submitting a job, the main things you need to indicate are the project account you are using (in some cases you might have access to multiple accounts such as an FCA and a condo) and the partition.</p>
+<p>You can see what accounts you have access to and which partitions within those accounts as follows:</p>
+<pre><code>sacctmgr -p show associations user=SAVIO_USERNAME</code></pre>
+<p>Here's an example of the output for a user who has access to an FCA, a condo, and a special partner account:</p>
+<pre><code>Cluster|Account|User|Partition|Share|GrpJobs|GrpTRES|GrpSubmit|GrpWall|GrpTRESMins|MaxJobs|MaxTRES|MaxTRESPerNode|MaxSubmit|MaxWall|MaxTRESMins|QOS|Def QOS|GrpTRESRunMins|
+brc|co_stat|paciorek|savio2_gpu|1||||||||||||savio_lowprio|savio_lowprio||
+brc|co_stat|paciorek|savio2_htc|1||||||||||||savio_lowprio|savio_lowprio||
+brc|co_stat|paciorek|savio|1||||||||||||savio_lowprio|savio_lowprio||
+brc|co_stat|paciorek|savio_bigmem|1||||||||||||savio_lowprio|savio_lowprio||
+brc|co_stat|paciorek|savio2|1||||||||||||savio_lowprio,stat_normal|stat_normal||
+brc|fc_paciorek|paciorek|savio2|1||||||||||||savio_debug,savio_normal|savio_normal||
+brc|fc_paciorek|paciorek|savio|1||||||||||||savio_debug,savio_normal|savio_normal||
+brc|fc_paciorek|paciorek|savio_bigmem|1||||||||||||savio_debug,savio_normal|savio_normal||
+brc|ac_scsguest|paciorek|savio2_htc|1||||||||||||savio_debug,savio_normal|savio_normal||
+brc|ac_scsguest|paciorek|savio2_gpu|1||||||||||||savio_debug,savio_normal|savio_normal||
+brc|ac_scsguest|paciorek|savio2|1||||||||||||savio_debug,savio_normal|savio_normal||
+brc|ac_scsguest|paciorek|savio_bigmem|1||||||||||||savio_debug,savio_normal|savio_normal||
+brc|ac_scsguest|paciorek|savio|1||||||||||||savio_debug,savio_normal|savio_normal||</code></pre>
+<p>If you are part of a condo, you'll notice that you have <em>low-priority</em> access to certain partitions. For example I am part of the statistics condo <em>co_stat</em>, which owns some Savio2 nodes and therefore I have normal access to those, but I can also burst beyond the condo and use other partitions at low-priority (see below).</p>
+<p>In contrast, through my FCA, I have access to the savio, savio2, and big memory partitions.</p>
+<h1 id="submitting-a-batch-job">Submitting a batch job</h1>
+<p>Let's see how to submit a simple job. If your job will only use the resources on a single node, you can do the following.</p>
+<p>Here's an example job script that I'll run. You'll need to modify the --account value and possibly the --partition value.</p>
+<pre><code>    #!/bin/bash
+    # Job name:
+    #SBATCH --job-name=test
+    #
+    # Account:
+    #SBATCH --account=co_stat
+    #
+    # Partition:
+    #SBATCH --partition=savio2
+    #
+    # Wall clock limit (30 seconds here):
+    #SBATCH --time=00:00:30
+    #
+    ## Command(s) to run:
+    module load python/3.2.3 numpy
+    python3 calc.py &gt;&amp; calc.out</code></pre>
+<p>Now let's submit and monitor the job:</p>
+<pre><code>sbatch job.sh
+
+squeue -j &lt;JOB_ID&gt;
+
+wwall -j &lt;JOB_ID&gt;</code></pre>
+<p>After a job has completed (or been terminated/cancelled), you can review the maximum memory used via the sacct command.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">sacct</span> -j <span class="kw">&lt;</span>JOBID<span class="kw">&gt;</span> --format=JobID,JobName,MaxRSS,Elapsed</code></pre></div>
+<p>MaxRSS will show the maximum amount of memory that the job used in kilobytes.</p>
+<p>Note that except for the <em>savio2_htc</em> and <em>savio2_gpu</em> partitions, all jobs are given exclusive access to the entire node or nodes assigned to the job (and your account is charged for all of the cores on the node(s).</p>
+<h1 id="parallel-job-submission">Parallel job submission</h1>
+<p>If you are submitting a job that uses multiple nodes, you'll need to carefully specify the resources you need. The key flags for use in your job script are:</p>
+<ul>
+<li><code>--nodes</code> (or <code>-N</code>): indicates the number of nodes to use</li>
+<li><code>--ntasks-per-node</code>: indicates the number of tasks (i.e., processes) one wants to run on each node</li>
+<li><code>--cpus-per-task</code> (or <code>-c</code>): indicates the number of cpus to be used for each task</li>
+</ul>
+<p>In addition, in some cases it can make sense to use the <code>--ntasks</code> (or <code>-n</code>) option to indicate the total number of tasks and let the scheduler determine how many nodes and tasks per node are needed. In general <code>--cpus-per-task</code> will be 1 except when running threaded code.</p>
+<p>Here's an example job script for a job that uses MPI for parallelizing over multiple nodes:</p>
+<pre><code>   #!/bin/bash
+   # Job name:
+   #SBATCH --job-name=test
+   #
+   # Account:
+   #SBATCH --account=account_name
+   #
+   # Partition:
+   #SBATCH --partition=partition_name
+   #
+   # Number of MPI tasks needed for use case (example):
+   #SBATCH --ntasks=40
+   #
+   # Processors per task:
+   #SBATCH --cpus-per-task=1
+   #
+   # Wall clock limit:
+   #SBATCH --time=00:00:30
+   #
+   ## Command(s) to run (example):
+   module load intel openmpi
+   mpirun ./a.out</code></pre>
+<p>When you write your code, you may need to specify information about the number of cores to use. SLURM will provide a variety of variables that you can use in your code so that it adapts to the resources you have requested rather than being hard-coded.</p>
+<p>Here are some of the variables that may be useful: SLURM_NTASKS, SLURM_CPUS_PER_TASK, SLURM_NODELIST, SLURM_NNODES.</p>
+<p>Some common paradigms are:</p>
+<ul>
+<li>MPI jobs that use <em>one</em> CPU per task for each of <em>n</em> tasks</li>
+<li>openMP/threaded jobs that use <em>c</em> CPUs (on one node) for <em>one</em> task</li>
+<li>hybrid MPI+threaded jobs that use <em>c</em> CPUs for each of <em>n</em> tasks</li>
+</ul>
+<p>There are lots more examples of job submission scripts for different kinds of parallelization (multi-node (MPI), multi-core (openMP), hybrid, etc.) <a href="http://research-it.berkeley.edu/services/high-performance-computing/running-your-jobs#Job-submission-with-specific-resource-requirements">here</a>.</p>
+<h1 id="interactive-jobs">Interactive jobs</h1>
+<p>You can also do work interactively.</p>
+<p>For this, you may want to have used the -Y flag to ssh if you are running software with a GUI such as MATLAB.</p>
+<pre><code># ssh -Y SAVIO_USERNAME@hpc.brc.berkeley.edu
+srun -A co_stat -p savio2  --nodes=1 -t 10:0 --pty bash
+# now execute on the compute node:
+module load matlab
+matlab</code></pre>
+<h1 id="low-priority-queue">Low-priority queue</h1>
+<p>Condo users have access to the broader compute resource that is limited only by the size of partitions, under the <em>savio_lowprio</em> QoS (queue). However this QoS does not get a priority as high as the general QoSs, such as <em>savio_normal</em> and <em>savio_debug</em>, or all the condo QoSs, and it is subject to preemption when all the other QoSs become busy.</p>
+<p>More details can be found <a href="http://research-it.berkeley.edu/services/high-performance-computing/user-guide/savio-user-guide">in the <em>Low Priority Jobs</em> section of the user guide</a>.</p>
+<p>Suppose I wanted to burst beyond the Statistics condo to run on 20 nodes. I'll illustrate here with an interactive job though usually this would be for a batch job.</p>
+<pre><code>srun -A co_stat -p savio2 --qos=savio_lowprio --nodes=20 -t 10:0 --pty bash
+## now look at environment variables to see my job can access 20 nodes:
+env | grep SLURM</code></pre>
+<h1 id="htc-jobs">HTC jobs</h1>
+<p>There is a partition called the HTC partition that allows you to request cores individually rather than an entire node at a time. The nodes in this partition are faster than the other nodes.</p>
+<pre><code>srun -A co_stat -p savio2_htc --cpus-per-task=2 -t 10:0 --pty bash
+## we can look at environment variables to verify our two cores
+env | grep SLURM
+module load python/3.2.3 numpy
+python3 calc.py &gt;&amp; calc.out &amp;
+top</code></pre>
+<h1 id="alternatives-to-the-htc-partition-for-collections-of-serial-jobs">Alternatives to the HTC partition for collections of serial jobs</h1>
+<p>You may have many serial jobs to run. It may be more cost-effective to collect those jobs together and run them across multiple cores on one or more nodes.</p>
+<p>Here are some options:</p>
+<ul>
+<li>using <a href="http://research-it.berkeley.edu/services/high-performance-computing/user-guide/hthelper-script">Savio's HT Helper tool</a> to run many computational tasks (e.g., thousands of simulations, scanning tens of thousands of parameter values, etc.) as part of single Savio job submission</li>
+<li>using <a href="https://github.com/berkeley-scf/tutorial-parallel-basics">single-node parallelism</a> and <a href="https://github.com/berkeley-scf/tutorial-parallel-distributed">multiple-node parallelism</a> in Python, R, and MATLAB
+<ul>
+<li>parallel R tools such as <em>foreach</em>, <em>parLapply</em>, and <em>mclapply</em></li>
+<li>parallel Python tools such as <em>IPython parallel</em>, <em>pp</em>, and <em>multiprocessing</em></li>
+<li>parallel functionality in MATLAB through <em>parfor</em></li>
+</ul></li>
+</ul>
+<h1 id="monitoring-jobs-and-the-job-queue">Monitoring jobs and the job queue</h1>
+<p>The basic command for seeing what is running on the system is <code>squeue</code>:</p>
+<pre><code>squeue
+squeue -u SAVIO_USERNAME
+squeue -A co_stat</code></pre>
+<p>To see what nodes are available in a given partition:</p>
+<pre><code>sinfo -p savio
+sinfo -p savio2_gpu</code></pre>
+<p>You can cancel a job with <code>scancel</code>.</p>
+<pre><code>scancel YOUR_JOB_ID</code></pre>
+<p>For more information on cores, QoS, and additional (e.g., GPU) resources, here's some syntax:</p>
+<pre><code>squeue -o &quot;%.7i %.12P %.20j %.8u %.2t %.9M %.5C %.8r %.3D %.20R %.8p %.20q %b&quot; </code></pre>
+<p>We provide some <a href="http://research-it.berkeley.edu/services/high-performance-computing/tips-using-brc-savio-cluster">tips about monitoring your job</a>.</p>
+<h1 id="example-use-of-standard-software-ipython-and-r-notebooks-through-jupyterhub">Example use of standard software: IPython and R notebooks through JupyterHub</h1>
+<p>Savio allows one to <a href="http://research-it.berkeley.edu/services/high-performance-computing/using-jupyter-notebooks-and-jupyterhub-savio">run Jupyter-based notebooks via a browser-based service called Jupyterhub</a>.</p>
+<p>Let's see a brief demo of an IPython notebook:</p>
+<ul>
+<li>Connect to https://jupyter.brc.berkeley.edu</li>
+<li>Login as usual with a one-time password</li>
+<li>Select how to run your notebook (on a test node or in the <code>savio2_htc</code>, <code>savio</code> or <code>savio2</code> partitions)</li>
+<li>Start up a notebook</li>
+</ul>
+<p>You can also run <a href="http://research-it.berkeley.edu/services/high-performance-computing/using-jupyter-notebooks-and-jupyterhub-savio/parallelization">parallel computations via an IPython notebook</a>.</p>
+<h1 id="example-use-of-standard-software-python">Example use of standard software: Python</h1>
+<p>Let's see a basic example of doing an analysis in Python across multiple cores on multiple nodes. We'll use the airline departure data in <em>bayArea.csv</em>.</p>
+<p>Here we'll use <em>IPython</em> for parallel computing. The example is a bit contrived in that a lot of the time is spent moving data around rather than doing computation, but it should illustrate how to do a few things.</p>
+<p>First we'll install a Python package not already available as a module.</p>
+<pre><code># remember to do I/O off scratch
+cp bayArea.csv /global/scratch/paciorek/.
+# install Python package
+module unload python
+module load python/2.7.8
+module load pip
+# trial and error to realize which package dependencies available in modules...
+module load numpy scipy six pandas pytz
+pip install --user statsmodels</code></pre>
+<p>Now we'll start up an interactive session, though often this sort of thing would be done via a batch job.</p>
+<pre><code>srun -A co_stat -p savio2 --nodes=2 --ntasks-per-node=24 -t 30:0 --pty bash</code></pre>
+<p>Now we'll start up a cluster using IPython's parallel tools. To do this across multiple nodes within a SLURM job, it goes like this:</p>
+<pre><code>module load python/2.7.8 ipython gcc openmpi
+ipcontroller --ip=&#39;*&#39; &amp;
+sleep 10
+srun ipengine &amp;
+sleep 20  # wait until all engines have successfully started
+ipython</code></pre>
+<p>If we were doing this on a single node, we could start everything up in a single call to <em>ipcluster</em>:</p>
+<pre><code>module load python/2.7.8 ipython
+ipcluster start -n $SLURM_CPUS_ON_NODE &amp;
+ipython</code></pre>
+<p>Here's our Python code (also found in <em>parallel.py</em>) for doing an analysis across multiple strata/subsets of the dataset in parallel. Note that the 'load_balanced_view' business is so that the computations are done in a load-balanced fashion, which is important for tasks that take different amounts of time to complete.</p>
+<pre><code>from IPython.parallel import Client
+c = Client()
+c.ids
+
+dview = c[:]
+dview.block = True
+dview.apply(lambda : &quot;Hello, World&quot;)
+
+lview = c.load_balanced_view()
+lview.block = True
+
+import pandas
+dat = pandas.read_csv(&#39;bayArea.csv&#39;, header = None)
+dat.columns = (&#39;Year&#39;,&#39;Month&#39;,&#39;DayofMonth&#39;,&#39;DayOfWeek&#39;,&#39;DepTime&#39;,
+&#39;CRSDepTime&#39;,&#39;ArrTime&#39;,&#39;CRSArrTime&#39;,&#39;UniqueCarrier&#39;,&#39;FlightNum&#39;,
+&#39;TailNum&#39;,&#39;ActualElapsedTime&#39;,&#39;CRSElapsedTime&#39;,&#39;AirTime&#39;,&#39;ArrDelay&#39;,
+&#39;DepDelay&#39;,&#39;Origin&#39;,&#39;Dest&#39;,&#39;Distance&#39;,&#39;TaxiIn&#39;,&#39;TaxiOut&#39;,&#39;Cancelled&#39;,
+&#39;CancellationCode&#39;,&#39;Diverted&#39;,&#39;CarrierDelay&#39;,&#39;WeatherDelay&#39;,
+&#39;NASDelay&#39;,&#39;SecurityDelay&#39;,&#39;LateAircraftDelay&#39;)
+
+dview.execute(&#39;import statsmodels.api as sm&#39;)
+
+dat2 = dat.loc[:, (&#39;DepDelay&#39;,&#39;Year&#39;,&#39;Dest&#39;,&#39;Origin&#39;)]
+dests = dat2.Dest.unique()
+
+mydict = dict(dat2 = dat2, dests = dests)
+dview.push(mydict)
+
+def f(id):
+    sub = dat2.loc[dat2.Dest == dests[id],:]
+    sub = sm.add_constant(sub)
+    model = sm.OLS(sub.DepDelay, sub.loc[:,(&#39;const&#39;,&#39;Year&#39;)])
+    results = model.fit()
+    return results.params
+
+import time
+time.time()
+parallel_result = lview.map(f, range(len(dests)))
+#result = map(f, range(len(dests)))
+time.time()
+
+# some NaN values because all &#39;Year&#39; values are the same for some destinations
+
+parallel_result</code></pre>
+<p>And we'll stop our cluster.</p>
+<pre><code>ipcluster stop</code></pre>
+<h1 id="example-use-of-standard-software-r">Example use of standard software: R</h1>
+<p>Let's see a basic example of doing an analysis in R across multiple cores on multiple nodes. We'll use the airline departure data in <em>bayArea.csv</em>.</p>
+<p>We'll do this interactively though often this sort of thing would be done via a batch job.</p>
+<pre><code># remember to do I/O off scratch
+cp bayArea.csv /global/scratch/paciorek/.
+module load r Rmpi
+Rscript -e &quot;install.packages(&#39;doMPI&#39;, repos = &#39;http://cran.cnr.berkeley.edu&#39;,
+  lib = &#39;/global/home/users/paciorek/R/x86_64-pc-linux-gnu-library/3.2&#39;)&quot;
+
+srun -A co_stat -p savio2  --nodes=3 --ntasks-per-node=24 -t 30:0 --pty bash
+module load gcc openmpi r Rmpi
+mpirun R CMD BATCH --no-save parallel-multi.R parallel-multi.Rout &amp;</code></pre>
+<p>Now here's the R code (see <em>parallel-multi.R</em>) we're running:</p>
+<pre><code>library(doMPI)
+
+cl = startMPIcluster()  # by default will start one fewer slave
+registerDoMPI(cl)
+clusterSize(cl) # just to check
+
+dat &lt;- read.csv(&#39;/global/scratch/paciorek/bayArea.csv&#39;, header = FALSE,
+                stringsAsFactors = FALSE)
+names(dat)[16:18] &lt;- c(&#39;delay&#39;, &#39;origin&#39;, &#39;dest&#39;)
+table(dat$dest)
+
+destVals &lt;- unique(dat$dest)
+
+# restrict to only columns we need to reduce copying time
+dat2 &lt;- subset(dat, select = c(&#39;delay&#39;, &#39;origin&#39;, &#39;dest&#39;))
+
+# some overhead in copying &#39;dat2&#39; to worker processes...
+results &lt;- foreach(destVal = destVals) %dopar% {
+    sub &lt;- subset(dat2, dest == destVal)
+    summary(sub$delay)
+}
+
+
+results
+
+closeCluster(cl)
+mpi.quit()</code></pre>
+<p>If you just want to parallelize within a node:</p>
+<pre><code>srun -A co_stat -p savio2 --nodes=1 -t 30:0 --pty bash
+module load r
+R CMD BATCH --no-save parallel-one.R parallel-one.Rout &amp;</code></pre>
+<p>Now here's the R code (see <em>parallel-one.R</em>) we're running:</p>
+<pre><code>library(doParallel)
+
+nCores &lt;- Sys.getenv(&#39;SLURM_CPUS_ON_NODE&#39;)
+registerDoParallel(nCores)
+
+dat &lt;- read.csv(&#39;/global/scratch/paciorek/bayArea.csv&#39;, header = FALSE,
+                stringsAsFactors = FALSE)
+names(dat)[16:18] &lt;- c(&#39;delay&#39;, &#39;origin&#39;, &#39;dest&#39;)
+table(dat$dest)
+
+destVals &lt;- unique(dat$dest)
+
+results &lt;- foreach(destVal = destVals) %dopar% {
+    sub &lt;- subset(dat, dest == destVal)
+    summary(sub$delay)
+}
+
+results</code></pre>
+<h1 id="how-to-get-additional-help">How to get additional help</h1>
+<ul>
+<li>For technical issues and questions about using Savio:
+<ul>
+<li>brc-hpc-help@berkeley.edu</li>
+</ul></li>
+<li>For questions about computing resources in general, including cloud computing:
+<ul>
+<li>brc@berkeley.edu</li>
+<li>office hours: Wed. 1:30-3:30, Thur. 9:30-11:30 here in AIS</li>
+</ul></li>
+<li>For questions about data management (including HIPAA-protected data):
+<ul>
+<li>researchdata@berkeley.edu</li>
+</ul></li>
+</ul>
+<h1 id="upcoming-events">Upcoming events</h1>
+<ul>
+<li><a href="http://research-it.berkeley.edu/services/cloud-computing-support/cloud-working-group">Cloud Working Group</a>, every other Thursday (including Sep. 28), 4-5 in D-Lab</li>
+<li><a href="http://dlab.berkeley.edu/working-groups/machine-learning-working-group-0">Machine Learning Working Group</a>, every other Friday (including Sep. 22), 12:30-2 in D-Lab</li>
+</ul>
+</body>
+</html>
