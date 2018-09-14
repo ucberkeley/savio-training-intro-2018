@@ -71,7 +71,7 @@ You have access to the following disk space, described [here in the *Storage and
 
 When reading/writing data to/from disk, unless the amount of data is small, please put the data in your scratch space at `/global/scratch/SAVIO_USERNAME`. The system is set up so that disk access for all users is optimized when users are doing input/output (I/O) off of scratch rather than off of their home directories. Doing I/O with files on your home directory can impact the ability of others to access their files on the filesystem. 
 
-Large amounts of disk space is available for purchase from the [*condo storage* offering](http://research-it.berkeley.edu/services/high-performance-computing/brc-condo-storage-service-savio). The minimum purchase is about $7,000, which provides roughly 25 TB for five years.
+Large amounts of disk space is available for purchase from the [*condo storage* offering](http://research-it.berkeley.edu/services/high-performance-computing/brc-condo-storage-service-savio). The minimum purchase is about $6,200, which provides roughly 42 TB for five years.
 
 
 # Login nodes, compute nodes, and DTN nodes 
@@ -231,31 +231,17 @@ module list  # what's loaded?
 module avail  # what's available
 ```
 
-One thing that tricks people is that the modules are arranged in a hierarchical (nested) fashion, so you only see some of the modules as being available *after* you load the parent module. Here's how we see the Python packages that are available.
+One thing that tricks people is that the modules are arranged in a hierarchical (nested) fashion, so you only see some of the modules as being available *after* you load the parent module (e.g., MKL, FFT, and HDF5/NetCDF software is nested within the gcc module). Here's how we see and load MPI.
 
 ```
-which python
-python
-
+module load openmpi
+module load gcc
 module avail
-module load python/3.2.3
-which python
-module avail
-module load numpy
-python 
-# import numpy as np
+module load openmpi
 ```
 
-Note that once Savio switches to the SL7 operating system circa December, all Python and R packages will be directly available as soon as either the Python or R module is loaded.
+Note that a variety of Python packages are directly simply by loading the python module. For R this is not the case, but you can load the *r-packages* module.
 
-Similarly, we can see that linear algebra, FFT, and HDF5/NetCDF software is available only after loading either the intel or gcc modules.
-
-```
-module load intel
-module avail
-module swap intel gcc
-module avail
-```
 
 # Submitting jobs: accounts and partitions
 
