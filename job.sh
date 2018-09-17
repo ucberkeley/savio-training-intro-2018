@@ -12,5 +12,5 @@
 #SBATCH --time=00:00:30
 #
 ## Command(s) to run:
-module load python/3.2.3 numpy
-python3 calc.py >& calc.out
+module load python/3.6
+python calc.py >& calc.out

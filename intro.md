@@ -38,6 +38,8 @@ This training session will cover the following topics:
      - Monitoring jobs and cluster status
  - Basic use of standard software: Python and R
      - Jupyter notebooks
+     - Parallelization in Python with ipyparallel
+     - Parallelization in R with foreach
      - Dask for parallelization in Python
  - More information
      - How to get additional help
@@ -234,7 +236,7 @@ module avail  # what's available
 One thing that tricks people is that the modules are arranged in a hierarchical (nested) fashion, so you only see some of the modules as being available *after* you load the parent module (e.g., MKL, FFT, and HDF5/NetCDF software is nested within the gcc module). Here's how we see and load MPI.
 
 ```
-module load openmpi
+module load openmpi  # this fails if gcc not yet loaded
 module load gcc
 module avail
 module load openmpi
@@ -257,19 +259,22 @@ sacctmgr -p show associations user=SAVIO_USERNAME
 Here's an example of the output for a user who has access to an FCA, a condo, and a special partner account:
 ```
 Cluster|Account|User|Partition|Share|GrpJobs|GrpTRES|GrpSubmit|GrpWall|GrpTRESMins|MaxJobs|MaxTRES|MaxTRESPerNode|MaxSubmit|MaxWall|MaxTRESMins|QOS|Def QOS|GrpTRESRunMins|
-brc|co_stat|paciorek|savio2_gpu|1||||||||||||savio_lowprio|savio_lowprio||
+brc|co_stat|paciorek|savio2_1080ti|1||||||||||||savio_lowprio|savio_lowprio||
+brc|co_stat|paciorek|savio2_knl|1||||||||||||savio_lowprio|savio_lowprio||
+brc|co_stat|paciorek|savio2_bigmem|1||||||||||||savio_lowprio|savio_lowprio||
+brc|co_stat|paciorek|savio2_gpu|1||||||||||||savio_lowprio,stat_gpu2_normal|stat_gpu2_normal||
 brc|co_stat|paciorek|savio2_htc|1||||||||||||savio_lowprio|savio_lowprio||
 brc|co_stat|paciorek|savio|1||||||||||||savio_lowprio|savio_lowprio||
 brc|co_stat|paciorek|savio_bigmem|1||||||||||||savio_lowprio|savio_lowprio||
-brc|co_stat|paciorek|savio2|1||||||||||||savio_lowprio,stat_normal|stat_normal||
+brc|co_stat|paciorek|savio2|1||||||||||||savio_lowprio,stat_savio2_normal|stat_savio2_normal||
+brc|fc_paciorek|paciorek|savio2_1080ti|1||||||||||||savio_debug,savio_normal|savio_normal||
+brc|fc_paciorek|paciorek|savio2_knl|1||||||||||||savio_debug,savio_normal|savio_normal||
+brc|fc_paciorek|paciorek|savio2_gpu|1||||||||||||savio_debug,savio_normal|savio_normal||
+brc|fc_paciorek|paciorek|savio2_htc|1||||||||||||savio_debug,savio_long,savio_normal|savio_normal||
+brc|fc_paciorek|paciorek|savio2_bigmem|1||||||||||||savio_debug,savio_normal|savio_normal||
 brc|fc_paciorek|paciorek|savio2|1||||||||||||savio_debug,savio_normal|savio_normal||
 brc|fc_paciorek|paciorek|savio|1||||||||||||savio_debug,savio_normal|savio_normal||
 brc|fc_paciorek|paciorek|savio_bigmem|1||||||||||||savio_debug,savio_normal|savio_normal||
-brc|ac_scsguest|paciorek|savio2_htc|1||||||||||||savio_debug,savio_normal|savio_normal||
-brc|ac_scsguest|paciorek|savio2_gpu|1||||||||||||savio_debug,savio_normal|savio_normal||
-brc|ac_scsguest|paciorek|savio2|1||||||||||||savio_debug,savio_normal|savio_normal||
-brc|ac_scsguest|paciorek|savio_bigmem|1||||||||||||savio_debug,savio_normal|savio_normal||
-brc|ac_scsguest|paciorek|savio|1||||||||||||savio_debug,savio_normal|savio_normal||
 ```
 
 If you are part of a condo, you'll notice that you have *low-priority* access to certain partitions. For example I am part of the statistics condo *co_stat*, which owns some Savio2 nodes and Savio2_gpu and therefore I have normal access to those, but I can also burst beyond the condo and use other partitions at low-priority (see below).
@@ -664,4 +669,4 @@ results
 
 # Upcoming events
 
- - [Savio installation workshop](http://research-it.berkeley.edu/services/cloud-computing-support/cloud-working-group), October XX.
+ - Savio hands-on installation workshop, mid-late October or early November.
