@@ -656,7 +656,14 @@ results <- foreach(destVal = destVals) %dopar% {
 results
 ```
 
+# Alternative Python Parallelization: Dask
+In addition to iPyParallel, one of the newer tools in the Python space is [Dask](http://dask.pydata.org/en/latest/), which provides out-of-the-box parallelization more easily without much setup or too much additional. Dask, as a python package, extends Numpy/Pandas syntax for arrays and dataframes that already exists and introduces native parallelization to these data structures, which speeds up analyses. Since Dask dataframes/arrays are descendants of the Pandas dataframe and Numpy array, they are compatible with any existing code and can serve as a plug-in replacement, with performance enhancements for multiple cores/nodes. It's also worth noting that Dask is useful for scaling up to large clusters like Savio but can also be useful for speeding up analyses on your local computer. We're including some articles and documentation that may be helpful in getting started:     
 
+- [Why Dask?](https://dask.pydata.org/en/latest/why.html)
+- [Standard Dask Demo](https://www.youtube.com/watch?v=ods97a5Pzw0)
+- [Why every Data Scientist should use Dask](http://dask.pydata.org/en/latest/api.html)
+- [Dask Cheatsheet](https://dask.pydata.org/en/latest/_downloads/daskcheatsheet.pdf)
+- [Detailed Dask overview video](https://www.youtube.com/watch?v=mjQ7tCQxYFQ)
 
 # How to get additional help
 
