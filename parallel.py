@@ -10,7 +10,7 @@ lview = c.load_balanced_view()
 lview.block = True
 
 import pandas
-dat = pandas.read_csv('bayArea.csv', header = None)
+dat = pandas.read_csv('bayArea.csv', header = None, encoding = 'latin1')
 dat.columns = ('Year','Month','DayofMonth','DayOfWeek','DepTime','CRSDepTime','ArrTime','CRSArrTime','UniqueCarrier','FlightNum','TailNum','ActualElapsedTime','CRSElapsedTime','AirTime','ArrDelay','DepDelay','Origin','Dest','Distance','TaxiIn','TaxiOut','Cancelled','CancellationCode','Diverted','CarrierDelay','WeatherDelay','NASDelay','SecurityDelay','LateAircraftDelay')
 
 dview.execute('import statsmodels.api as sm')

@@ -90,6 +90,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li>Basic use of standard software: Python and R
 <ul>
 <li>Jupyter notebooks</li>
+<li>Parallelization in Python with ipyparallel</li>
+<li>Parallelization in R with foreach</li>
 <li>Dask for parallelization in Python</li>
 </ul></li>
 <li>More information
@@ -209,7 +211,7 @@ get zotero.sqlite</code></pre>
 <pre><code>module list  # what&#39;s loaded?
 module avail  # what&#39;s available</code></pre>
 <p>One thing that tricks people is that the modules are arranged in a hierarchical (nested) fashion, so you only see some of the modules as being available <em>after</em> you load the parent module (e.g., MKL, FFT, and HDF5/NetCDF software is nested within the gcc module). Here's how we see and load MPI.</p>
-<pre><code>module load openmpi
+<pre><code>module load openmpi  # this fails if gcc not yet loaded
 module load gcc
 module avail
 module load openmpi</code></pre>
@@ -221,19 +223,22 @@ module load openmpi</code></pre>
 <pre><code>sacctmgr -p show associations user=SAVIO_USERNAME</code></pre>
 <p>Here's an example of the output for a user who has access to an FCA, a condo, and a special partner account:</p>
 <pre><code>Cluster|Account|User|Partition|Share|GrpJobs|GrpTRES|GrpSubmit|GrpWall|GrpTRESMins|MaxJobs|MaxTRES|MaxTRESPerNode|MaxSubmit|MaxWall|MaxTRESMins|QOS|Def QOS|GrpTRESRunMins|
-brc|co_stat|paciorek|savio2_gpu|1||||||||||||savio_lowprio|savio_lowprio||
+brc|co_stat|paciorek|savio2_1080ti|1||||||||||||savio_lowprio|savio_lowprio||
+brc|co_stat|paciorek|savio2_knl|1||||||||||||savio_lowprio|savio_lowprio||
+brc|co_stat|paciorek|savio2_bigmem|1||||||||||||savio_lowprio|savio_lowprio||
+brc|co_stat|paciorek|savio2_gpu|1||||||||||||savio_lowprio,stat_gpu2_normal|stat_gpu2_normal||
 brc|co_stat|paciorek|savio2_htc|1||||||||||||savio_lowprio|savio_lowprio||
 brc|co_stat|paciorek|savio|1||||||||||||savio_lowprio|savio_lowprio||
 brc|co_stat|paciorek|savio_bigmem|1||||||||||||savio_lowprio|savio_lowprio||
-brc|co_stat|paciorek|savio2|1||||||||||||savio_lowprio,stat_normal|stat_normal||
+brc|co_stat|paciorek|savio2|1||||||||||||savio_lowprio,stat_savio2_normal|stat_savio2_normal||
+brc|fc_paciorek|paciorek|savio2_1080ti|1||||||||||||savio_debug,savio_normal|savio_normal||
+brc|fc_paciorek|paciorek|savio2_knl|1||||||||||||savio_debug,savio_normal|savio_normal||
+brc|fc_paciorek|paciorek|savio2_gpu|1||||||||||||savio_debug,savio_normal|savio_normal||
+brc|fc_paciorek|paciorek|savio2_htc|1||||||||||||savio_debug,savio_long,savio_normal|savio_normal||
+brc|fc_paciorek|paciorek|savio2_bigmem|1||||||||||||savio_debug,savio_normal|savio_normal||
 brc|fc_paciorek|paciorek|savio2|1||||||||||||savio_debug,savio_normal|savio_normal||
 brc|fc_paciorek|paciorek|savio|1||||||||||||savio_debug,savio_normal|savio_normal||
-brc|fc_paciorek|paciorek|savio_bigmem|1||||||||||||savio_debug,savio_normal|savio_normal||
-brc|ac_scsguest|paciorek|savio2_htc|1||||||||||||savio_debug,savio_normal|savio_normal||
-brc|ac_scsguest|paciorek|savio2_gpu|1||||||||||||savio_debug,savio_normal|savio_normal||
-brc|ac_scsguest|paciorek|savio2|1||||||||||||savio_debug,savio_normal|savio_normal||
-brc|ac_scsguest|paciorek|savio_bigmem|1||||||||||||savio_debug,savio_normal|savio_normal||
-brc|ac_scsguest|paciorek|savio|1||||||||||||savio_debug,savio_normal|savio_normal||</code></pre>
+brc|fc_paciorek|paciorek|savio_bigmem|1||||||||||||savio_debug,savio_normal|savio_normal||</code></pre>
 <p>If you are part of a condo, you'll notice that you have <em>low-priority</em> access to certain partitions. For example I am part of the statistics condo <em>co_stat</em>, which owns some Savio2 nodes and Savio2_gpu and therefore I have normal access to those, but I can also burst beyond the condo and use other partitions at low-priority (see below).</p>
 <p>In contrast, through my FCA, I have access to the savio, savio2, and big memory partitions.</p>
 <h1 id="submitting-a-batch-job">Submitting a batch job</h1>
@@ -265,8 +270,8 @@ wwall -j &lt;JOB_ID&gt;</code></pre>
 <pre><code>sacct -j &lt;JOB_ID&gt; --format=JobID,JobName,MaxRSS,Elapsed</code></pre>
 <p>MaxRSS will show the maximum amount of memory that the job used in kilobytes.</p>
 <p>You can also login to the node where you are running and use commands like <em>top</em> and <em>ps</em>:</p>
-<p>``` srun --jobid=<JOB_ID> --pty /bin/bash</p>
-<p>Note that except for the <em>savio2_htc</em> and <em>savio2_gpu</em> partitions, all jobs are given exclusive access to the entire node or nodes assigned to the job (and your account is charged for all of the cores on the node(s).</p>
+<pre><code>srun --jobid=&lt;JOB_ID&gt; --pty /bin/bash</code></pre>
+<p>Note that except for the <em>savio2_htc</em> and <em>savio2_gpu</em> partitions, all jobs are given exclusive access to the entire node or nodes assigned to the job (and your account is charged for all of the cores on the node(s)).</p>
 <h1 id="parallel-job-submission">Parallel job submission</h1>
 <p>If you are submitting a job that uses multiple nodes, you'll need to carefully specify the resources you need. The key flags for use in your job script are:</p>
 <ul>
@@ -274,7 +279,7 @@ wwall -j &lt;JOB_ID&gt;</code></pre>
 <li><code>--ntasks-per-node</code>: indicates the number of tasks (i.e., processes) one wants to run on each node</li>
 <li><code>--cpus-per-task</code> (or <code>-c</code>): indicates the number of cpus to be used for each task</li>
 </ul>
-<p>In addition, in some cases it can make sense to use the <code>--ntasks</code> (or <code>-n</code>) option to indicate the total number of tasks and let the scheduler determine how many nodes and tasks per node are needed. In general <code>--cpus-per-task</code> will be 1 except when running threaded code.</p>
+<p>In addition, in some cases it can make sense to use the <code>--ntasks</code> (or <code>-n</code>) option to indicate the total number of tasks and let the scheduler determine how many nodes and tasks per node are needed. In general <code>--cpus-per-task</code> will be one except when running threaded code.</p>
 <p>Here's an example job script for a job that uses MPI for parallelizing over multiple nodes:</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="co">#!/bin/bash</span>
 <span class="co"># Job name:</span>
@@ -340,7 +345,7 @@ top</code></pre>
 <li>using <a href="https://github.com/berkeley-scf/tutorial-parallel-basics">single-node parallelism</a> and <a href="https://github.com/berkeley-scf/tutorial-parallel-distributed">multiple-node parallelism</a> in Python, R, and MATLAB
 <ul>
 <li>parallel R tools such as <em>foreach</em>, <em>parLapply</em>, and <em>mclapply</em></li>
-<li>parallel Python tools such as <em>IPython parallel</em>, and <em>Dask</em></li>
+<li>parallel Python tools such as <em>ipyparallel</em>, and <em>Dask</em></li>
 <li>parallel functionality in MATLAB through <em>parfor</em></li>
 </ul></li>
 </ul>
@@ -356,7 +361,7 @@ sinfo -p savio2_gpu</code></pre>
 <pre><code>scancel YOUR_JOB_ID</code></pre>
 <p>For more information on cores, QoS, and additional (e.g., GPU) resources, here's some syntax:</p>
 <pre><code>squeue -o &quot;%.7i %.12P %.20j %.8u %.2t %.9M %.5C %.8r %.3D %.20R %.8p %.20q %b&quot; </code></pre>
-<p>We provide some <a href="http://research-it.berkeley.edu/services/high-performance-computing/tips-using-brc-savio-cluster">tips about monitoring your job</a>.</p>
+<p>We provide some <a href="http://research-it.berkeley.edu/services/high-performance-computing/running-your-jobs">tips about monitoring your jobs</a>. (Scroll down to the &quot;Monitoring jobs&quot; section.)</p>
 <h1 id="example-use-of-standard-software-ipython-and-r-notebooks-through-jupyterhub">Example use of standard software: IPython and R notebooks through JupyterHub</h1>
 <p>Savio allows one to <a href="http://research-it.berkeley.edu/services/high-performance-computing/using-jupyter-notebooks-and-jupyterhub-savio">run Jupyter-based notebooks via a browser-based service called Jupyterhub</a>.</p>
 <p>Let's see a brief demo of an IPython notebook:</p>
@@ -370,7 +375,7 @@ sinfo -p savio2_gpu</code></pre>
 <h1 id="example-use-of-standard-software-python">Example use of standard software: Python</h1>
 <p>Let's see a basic example of doing an analysis in Python across multiple cores on multiple nodes. We'll use the airline departure data in <em>bayArea.csv</em>.</p>
 <p>Here we'll use <em>IPython</em> for parallel computing. The example is a bit contrived in that a lot of the time is spent moving data around rather than doing computation, but it should illustrate how to do a few things.</p>
-<p>First we'll install a Python package not already available as a module.</p>
+<p>First we'll install a Python package (pretending it is not already available via the basic python/3.6 module).</p>
 <pre><code>cp bayArea.csv /global/scratch/paciorek/.  # remember to do I/O off scratch
 # install Python package
 module unload python
@@ -384,6 +389,7 @@ ipcontroller --ip=&#39;*&#39; &amp;
 sleep 10
 srun ipengine &amp;
 sleep 20  # wait until all engines have successfully started
+cd /global/scratch/paciorek
 ipython</code></pre>
 <p>If we were doing this on a single node, we could start everything up in a single call to <em>ipcluster</em>:</p>
 <pre><code>module load python/3.6
@@ -402,7 +408,7 @@ lview = c.load_balanced_view()
 lview.block = True
 
 import pandas
-dat = pandas.read_csv(&#39;bayArea.csv&#39;, header = None)
+dat = pandas.read_csv(&#39;bayArea.csv&#39;, header = None, encoding = &#39;latin1&#39;)
 dat.columns = (&#39;Year&#39;,&#39;Month&#39;,&#39;DayofMonth&#39;,&#39;DayOfWeek&#39;,&#39;DepTime&#39;,
 &#39;CRSDepTime&#39;,&#39;ArrTime&#39;,&#39;CRSArrTime&#39;,&#39;UniqueCarrier&#39;,&#39;FlightNum&#39;,
 &#39;TailNum&#39;,&#39;ActualElapsedTime&#39;,&#39;CRSElapsedTime&#39;,&#39;AirTime&#39;,&#39;ArrDelay&#39;,
@@ -442,13 +448,13 @@ parallel_result</code></pre>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="co"># remember to do I/O off scratch</span>
 <span class="kw">cp</span> bayArea.csv /global/scratch/paciorek/.
 
-<span class="kw">srun</span> -A co_stat -p savio2  --nodes=3 --ntasks-per-node=24 -t 30:0 --pty bash
-<span class="kw">module</span> load gcc openmpi r/3.4.2 r-packages 
+<span class="kw">srun</span> -A co_stat -p savio2  --nodes=2 --ntasks-per-node=24 -t 30:0 --pty bash
+<span class="kw">module</span> load r/3.4.2 r-packages 
 <span class="kw">mpirun</span> R CMD BATCH --no-save parallel-multi.R parallel-multi.Rout <span class="kw">&amp;</span></code></pre></div>
 <p>Now here's the R code (see <em>parallel-multi.R</em>) we're running:</p>
 <pre><code>library(doMPI)
 
-cl = startMPIcluster()  # by default will start one fewer slave
+cl = startMPIcluster()  # by default will start one fewer slave, using one for master
 registerDoMPI(cl)
 clusterSize(cl) # just to check
 
@@ -505,17 +511,17 @@ results</code></pre>
 <li>For questions about computing resources in general, including cloud computing:
 <ul>
 <li>brc@berkeley.edu</li>
-<li>office hours: Tues. 10:00 - 12:00, Wed. 1:30-3:30, Thur. 9:30-11:30 here in AIS</li>
+<li>office hours: Tues. 10:00-12:00, Wed. 1:30-3:30, Thur. 9:30-11:30 here in AIS</li>
 </ul></li>
 <li>For questions about data management (including HIPAA-protected data):
 <ul>
 <li>researchdata@berkeley.edu</li>
-<li>office hours: Tues. 10:00 - 12:00, Wed. 1:30-3:30, Thur. 9:30-11:30 here in AIS</li>
+<li>office hours: Tues. 10:00-12:00, Wed. 1:30-3:30, Thur. 9:30-11:30 here in AIS</li>
 </ul></li>
 </ul>
 <h1 id="upcoming-events">Upcoming events</h1>
 <ul>
-<li><a href="http://research-it.berkeley.edu/services/cloud-computing-support/cloud-working-group">Savio installation workshop</a>, October XX.</li>
+<li>Savio hands-on installation workshop, mid-late October or early November.</li>
 </ul>
 </body>
 </html>

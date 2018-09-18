@@ -329,8 +329,10 @@ You can also login to the node where you are running and use commands like *top*
 
 ```
 srun --jobid=<JOB_ID> --pty /bin/bash
+```
 
-Note that except for the *savio2_htc*  and *savio2_gpu* partitions, all jobs are given exclusive access to the entire node or nodes assigned to the job (and your account is charged for all of the cores on the node(s). 
+Note that except for the *savio2_htc*  and *savio2_gpu* partitions, all jobs are given exclusive access to the entire node or nodes assigned to the job (and your account is charged for all of the cores on the node(s)).
+
 
 # Parallel job submission
 
@@ -340,7 +342,7 @@ If you are submitting a job that uses multiple nodes, you'll need to carefully s
  - `--ntasks-per-node`: indicates the number of tasks (i.e., processes) one wants to run on each node
  - `--cpus-per-task` (or `-c`): indicates the number of cpus to be used for each task
 
-In addition, in some cases it can make sense to use the `--ntasks` (or `-n`) option to indicate the total number of tasks and let the scheduler determine how many nodes and tasks per node are needed. In general `--cpus-per-task` will be 1 except when running threaded code.  
+In addition, in some cases it can make sense to use the `--ntasks` (or `-n`) option to indicate the total number of tasks and let the scheduler determine how many nodes and tasks per node are needed. In general `--cpus-per-task` will be one except when running threaded code.  
 
 Here's an example job script for a job that uses MPI for parallelizing over multiple nodes:
 
@@ -437,7 +439,7 @@ Here are some options:
   - using [Savio's HT Helper tool](http://research-it.berkeley.edu/services/high-performance-computing/user-guide/hthelper-script) to run many computational tasks (e.g., thousands of simulations, scanning tens of thousands of parameter values, etc.) as part of single Savio job submission
   - using [single-node parallelism](https://github.com/berkeley-scf/tutorial-parallel-basics) and [multiple-node parallelism](https://github.com/berkeley-scf/tutorial-parallel-distributed) in Python, R, and MATLAB
     - parallel R tools such as *foreach*, *parLapply*, and *mclapply*
-    - parallel Python tools such as  *IPython parallel*, and *Dask*
+    - parallel Python tools such as  *ipyparallel*, and *Dask*
     - parallel functionality in MATLAB through *parfor*
 
 # Monitoring jobs and the job queue
@@ -465,7 +467,7 @@ For more information on cores, QoS, and additional (e.g., GPU) resources, here's
 squeue -o "%.7i %.12P %.20j %.8u %.2t %.9M %.5C %.8r %.3D %.20R %.8p %.20q %b" 
 ```
 
-We provide some [tips about monitoring your job](http://research-it.berkeley.edu/services/high-performance-computing/tips-using-brc-savio-cluster).
+We provide some [tips about monitoring your jobs](http://research-it.berkeley.edu/services/high-performance-computing/running-your-jobs). (Scroll down to the "Monitoring jobs" section.)
 
 # Example use of standard software: IPython and R notebooks through JupyterHub
 
@@ -486,7 +488,7 @@ Let's see a basic example of doing an analysis in Python across multiple cores o
 
 Here we'll use *IPython* for parallel computing. The example is a bit contrived in that a lot of the time is spent moving data around rather than doing computation, but it should illustrate how to do a few things.
 
-First we'll install a Python package not already available as a module.
+First we'll install a Python package (pretending it is not already available via the basic python/3.6 module).
 
 ```
 cp bayArea.csv /global/scratch/paciorek/.  # remember to do I/O off scratch
@@ -510,6 +512,7 @@ ipcontroller --ip='*' &
 sleep 10
 srun ipengine &
 sleep 20  # wait until all engines have successfully started
+cd /global/scratch/paciorek
 ipython
 ```
 
@@ -536,7 +539,7 @@ lview = c.load_balanced_view()
 lview.block = True
 
 import pandas
-dat = pandas.read_csv('bayArea.csv', header = None)
+dat = pandas.read_csv('bayArea.csv', header = None, encoding = 'latin1')
 dat.columns = ('Year','Month','DayofMonth','DayOfWeek','DepTime',
 'CRSDepTime','ArrTime','CRSArrTime','UniqueCarrier','FlightNum',
 'TailNum','ActualElapsedTime','CRSElapsedTime','AirTime','ArrDelay',
@@ -586,8 +589,8 @@ We'll do this interactively though often this sort of thing would be done via a 
 # remember to do I/O off scratch
 cp bayArea.csv /global/scratch/paciorek/.
 
-srun -A co_stat -p savio2  --nodes=3 --ntasks-per-node=24 -t 30:0 --pty bash
-module load gcc openmpi r/3.4.2 r-packages 
+srun -A co_stat -p savio2  --nodes=2 --ntasks-per-node=24 -t 30:0 --pty bash
+module load r/3.4.2 r-packages 
 mpirun R CMD BATCH --no-save parallel-multi.R parallel-multi.Rout &
 ```
 
@@ -596,7 +599,7 @@ Now here's the R code (see *parallel-multi.R*) we're running:
 ```
 library(doMPI)
 
-cl = startMPIcluster()  # by default will start one fewer slave
+cl = startMPIcluster()  # by default will start one fewer slave, using one for master
 registerDoMPI(cl)
 clusterSize(cl) # just to check
 
@@ -661,10 +664,10 @@ results
     - brc-hpc-help@berkeley.edu
  - For questions about computing resources in general, including cloud computing: 
     - brc@berkeley.edu
-    - office hours: Tues. 10:00 - 12:00, Wed. 1:30-3:30, Thur. 9:30-11:30 here in AIS
+    - office hours: Tues. 10:00-12:00, Wed. 1:30-3:30, Thur. 9:30-11:30 here in AIS
  - For questions about data management (including HIPAA-protected data): 
     - researchdata@berkeley.edu
-    - office hours: Tues. 10:00 - 12:00, Wed. 1:30-3:30, Thur. 9:30-11:30 here in AIS
+    - office hours: Tues. 10:00-12:00, Wed. 1:30-3:30, Thur. 9:30-11:30 here in AIS
 
 
 # Upcoming events

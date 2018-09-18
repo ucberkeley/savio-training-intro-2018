@@ -1,6 +1,6 @@
 library(doMPI)
 
-cl = startMPIcluster()  # by default will start one fewer slave
+cl = startMPIcluster()  # by default will start one fewer slave, using one for master
 registerDoMPI(cl)
 clusterSize(cl) # just to check
 
