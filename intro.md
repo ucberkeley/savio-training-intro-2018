@@ -9,7 +9,7 @@ We'll do this mostly as a demonstration. We encourage you to login to your accou
 
 Much of this material is based on the extensive Savio documention we have prepared and continue to prepare, available at [http://research-it.berkeley.edu/services/high-performance-computing](http://research-it.berkeley.edu/services/high-performance-computing).
 
-The materials for this tutorial are available using git at [https://github.com/ucberkeley/savio-training-intro-2018](https://github.com/ucberkeley/savio-training-intro-2018) or simply as a [zip file](https://github.com/ucberkeley/savio-training-intro-2018/archive/master.zip).
+The materials for this tutorial are available using git at the short URL [http://bit.do/F18Savio](http://bit.do/F18Savio), the  GitHub URL [https://github.com/ucberkeley/savio-training-intro-2018](https://github.com/ucberkeley/savio-training-intro-2018), or simply as a [zip file](https://github.com/ucberkeley/savio-training-intro-2018/archive/master.zip).
 
 # Outline
 
