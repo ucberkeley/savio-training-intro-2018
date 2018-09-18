@@ -63,7 +63,7 @@ September 18, 2018
 <h1>Introduction</h1>
 <p>We'll do this mostly as a demonstration. We encourage you to login to your account and try out the various examples yourself as we go through them.</p>
 <p>Much of this material is based on the extensive Savio documention we have prepared and continue to prepare, available at <a href="http://research-it.berkeley.edu/services/high-performance-computing" class="uri">http://research-it.berkeley.edu/services/high-performance-computing</a>.</p>
-<p>The materials for this tutorial are available using git at <a href="https://github.com/ucberkeley/savio-training-intro-2018" class="uri">https://github.com/ucberkeley/savio-training-intro-2018</a> or simply as a <a href="https://github.com/ucberkeley/savio-training-intro-2018/archive/master.zip">zip file</a>.</p>
+<p>The materials for this tutorial are available using git at the short URL <a href="http://bit.do/F18Savio">bit.do/F18Savio</a>, the GitHub URL <a href="https://github.com/ucberkeley/savio-training-intro-2018" class="uri">https://github.com/ucberkeley/savio-training-intro-2018</a>, or simply as a <a href="https://github.com/ucberkeley/savio-training-intro-2018/archive/master.zip">zip file</a>.</p>
 </div>
 <div id="outline" class="slide section level1">
 <h1>Outline</h1>
@@ -561,6 +561,17 @@ results &lt;- foreach(destVal = destVals) %dopar% {
 }
 
 results</code></pre>
+</div>
+<div id="alternative-python-parallelization-dask" class="slide section level1">
+<h1>Alternative Python Parallelization: Dask</h1>
+<p>In addition to iPyParallel, one of the newer tools in the Python space is <a href="http://dask.pydata.org/en/latest/">Dask</a>, which provides out-of-the-box parallelization more easily without much setup or too much additional. Dask, as a python package, extends Numpy/Pandas syntax for arrays and dataframes that already exists and introduces native parallelization to these data structures, which speeds up analyses. Since Dask dataframes/arrays are descendants of the Pandas dataframe and Numpy array, they are compatible with any existing code and can serve as a plug-in replacement, with performance enhancements for multiple cores/nodes. It's also worth noting that Dask is useful for scaling up to large clusters like Savio but can also be useful for speeding up analyses on your local computer. We're including some articles and documentation that may be helpful in getting started:</p>
+<ul>
+<li><a href="https://dask.pydata.org/en/latest/why.html">Why Dask?</a></li>
+<li><a href="https://www.youtube.com/watch?v=ods97a5Pzw0">Standard Dask Demo</a></li>
+<li><a href="http://dask.pydata.org/en/latest/api.html">Why every Data Scientist should use Dask</a></li>
+<li><a href="https://dask.pydata.org/en/latest/_downloads/daskcheatsheet.pdf">Dask Cheatsheet</a></li>
+<li><a href="https://www.youtube.com/watch?v=mjQ7tCQxYFQ">Detailed Dask overview video</a></li>
+</ul>
 </div>
 <div id="how-to-get-additional-help" class="slide section level1">
 <h1>How to get additional help</h1>
