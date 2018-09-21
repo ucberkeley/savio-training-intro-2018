@@ -442,7 +442,7 @@ Here are some options:
     - parallel Python tools such as  *ipyparallel*, and *Dask*
     - parallel functionality in MATLAB through *parfor*
 
-# Monitoring jobs and the job queue
+# Monitoring jobs, the job queue, and overall usage
 
 The basic command for seeing what is running on the system is `squeue`:
 ```
@@ -468,6 +468,13 @@ squeue -o "%.7i %.12P %.20j %.8u %.2t %.9M %.5C %.8r %.3D %.20R %.8p %.20q %b"
 ```
 
 We provide some [tips about monitoring your jobs](http://research-it.berkeley.edu/services/high-performance-computing/running-your-jobs). (Scroll down to the "Monitoring jobs" section.)
+
+If you'd like to see how much of an FCA has been used:
+
+```
+check_usage.sh -a fc_popgen 
+```
+
 
 # Example use of standard software: IPython and R notebooks through JupyterHub
 

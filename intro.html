@@ -54,7 +54,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h1 id="introduction">Introduction</h1>
 <p>We'll do this mostly as a demonstration. We encourage you to login to your account and try out the various examples yourself as we go through them.</p>
 <p>Much of this material is based on the extensive Savio documention we have prepared and continue to prepare, available at <a href="http://research-it.berkeley.edu/services/high-performance-computing" class="uri">http://research-it.berkeley.edu/services/high-performance-computing</a>.</p>
-<p>The materials for this tutorial are available using git at <a href="https://github.com/ucberkeley/savio-training-intro-2018" class="uri">https://github.com/ucberkeley/savio-training-intro-2018</a> or simply as a <a href="https://github.com/ucberkeley/savio-training-intro-2018/archive/master.zip">zip file</a>.</p>
+<p>The materials for this tutorial are available using git at the short URL <a href="http://bit.do/F18Savio" class="uri">http://bit.do/F18Savio</a>, the GitHub URL <a href="https://github.com/ucberkeley/savio-training-intro-2018" class="uri">https://github.com/ucberkeley/savio-training-intro-2018</a>, or simply as a <a href="https://github.com/ucberkeley/savio-training-intro-2018/archive/master.zip">zip file</a>.</p>
 <h1 id="outline">Outline</h1>
 <p>This training session will cover the following topics:</p>
 <ul>
@@ -349,7 +349,7 @@ top</code></pre>
 <li>parallel functionality in MATLAB through <em>parfor</em></li>
 </ul></li>
 </ul>
-<h1 id="monitoring-jobs-and-the-job-queue">Monitoring jobs and the job queue</h1>
+<h1 id="monitoring-jobs-the-job-queue-and-overall-usage">Monitoring jobs, the job queue, and overall usage</h1>
 <p>The basic command for seeing what is running on the system is <code>squeue</code>:</p>
 <pre><code>squeue
 squeue -u SAVIO_USERNAME
@@ -362,6 +362,8 @@ sinfo -p savio2_gpu</code></pre>
 <p>For more information on cores, QoS, and additional (e.g., GPU) resources, here's some syntax:</p>
 <pre><code>squeue -o &quot;%.7i %.12P %.20j %.8u %.2t %.9M %.5C %.8r %.3D %.20R %.8p %.20q %b&quot; </code></pre>
 <p>We provide some <a href="http://research-it.berkeley.edu/services/high-performance-computing/running-your-jobs">tips about monitoring your jobs</a>. (Scroll down to the &quot;Monitoring jobs&quot; section.)</p>
+<p>If you'd like to see how much of an FCA has been used:</p>
+<pre><code>check_usage.sh -a fc_popgen </code></pre>
 <h1 id="example-use-of-standard-software-ipython-and-r-notebooks-through-jupyterhub">Example use of standard software: IPython and R notebooks through JupyterHub</h1>
 <p>Savio allows one to <a href="http://research-it.berkeley.edu/services/high-performance-computing/using-jupyter-notebooks-and-jupyterhub-savio">run Jupyter-based notebooks via a browser-based service called Jupyterhub</a>.</p>
 <p>Let's see a brief demo of an IPython notebook:</p>
@@ -502,6 +504,15 @@ results &lt;- foreach(destVal = destVals) %dopar% {
 }
 
 results</code></pre>
+<h1 id="alternative-python-parallelization-dask">Alternative Python Parallelization: Dask</h1>
+<p>In addition to iPyParallel, one of the newer tools in the Python space is <a href="http://dask.pydata.org/en/latest/">Dask</a>, which provides out-of-the-box parallelization more easily without much setup or too much additional. Dask, as a python package, extends Numpy/Pandas syntax for arrays and dataframes that already exists and introduces native parallelization to these data structures, which speeds up analyses. Since Dask dataframes/arrays are descendants of the Pandas dataframe and Numpy array, they are compatible with any existing code and can serve as a plug-in replacement, with performance enhancements for multiple cores/nodes. It's also worth noting that Dask is useful for scaling up to large clusters like Savio but can also be useful for speeding up analyses on your local computer. We're including some articles and documentation that may be helpful in getting started:</p>
+<ul>
+<li><a href="https://dask.pydata.org/en/latest/why.html">Why Dask?</a></li>
+<li><a href="https://www.youtube.com/watch?v=ods97a5Pzw0">Standard Dask Demo</a></li>
+<li><a href="http://dask.pydata.org/en/latest/api.html">Why every Data Scientist should use Dask</a></li>
+<li><a href="https://dask.pydata.org/en/latest/_downloads/daskcheatsheet.pdf">Dask Cheatsheet</a></li>
+<li><a href="https://www.youtube.com/watch?v=mjQ7tCQxYFQ">Detailed Dask overview video</a></li>
+</ul>
 <h1 id="how-to-get-additional-help">How to get additional help</h1>
 <ul>
 <li>For technical issues and questions about using Savio:
