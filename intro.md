@@ -449,6 +449,11 @@ The basic command for seeing what is running on the system is `squeue`:
 squeue
 squeue -u SAVIO_USERNAME
 squeue -A co_stat
+``` 
+To get a list of the jobs submitted within a given timeframe you can use:
+```
+sacct -u $USER --starttime=[START] --endtime=[END]
+where [START] and [END] would be replaced with a date like 2018-01-01 and 2020-01-01 respectively
 ```
 
 To see what nodes are available in a given partition:
